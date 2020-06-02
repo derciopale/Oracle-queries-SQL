@@ -1,0 +1,49 @@
+
+1. Mostre o nome, a funcão e o ID do departamento a que pertence dos empregados que têm
+   a mesma função (JOB) do ‘BLAKE’. Ordene a saida pela ordem crescente do nome. 
+
+SELECT ename, job, deptno FROM EMP WHERE job=(SELECT job FROM EMP WHERE ename=UPPER('BLAKE')) ORDER BY ename ASC;
+ 
+2. Mostre os empregados que ganham mais do que o salário mais baixo do
+   departamento 30. Ordene os salários mostrados por ordem decrescente. 
+
+SELECT * FROM emp WHERE sal>(SELECT MIN(sal) FROM emp WHERE deptno=30) ORDER BY sal DESC;
+
+3. Mostre os departamentos que têm um salário médio superior ao do departamento 20.
+
+SELECT deptno, AVG(sal)FROM emp GROUP BY deptno HAVING AVG(sal) > (SELECT AVG(sal)FROM emp WHERE deptno=20);
+
+4.Mostre os departamentos nos quais não existem quaisquer empregados.
+
+SELECT * FROM dept  WHERE NOT EXISTS (SELECT * FROM emp WHERE deptno=dept.deptno);
+
+5. Selecione o nome e o salario acrescido de 12.7% e expresso como um número inteiro de
+todos os empregados.
+
+SELECT ename, ROUND(sal * 1.127,0) "salReajustado" FROM emp;
+
+6. Mostre para cada empregado seu nome e data de admissão no formato DD/MM/YY
+HH:MI:SS cujo o nome não começa com a letra S.
+
+SELECT ename, TO_CHAR (hiredate, 'DD/MM/YY HH:MI:SS') dataAdmissao FROM emp WHERE ename NOT LIKE '%S';
+
+
+7. Mostre para cada empregado o seu nome, salário e a sua comissão. Para o nome, apenas a
+primeira letra deve estar a Maiúscula e para o salário e a comissão onde o valor é nulo
+deve ser subsituido por 0 (zero)
+
+SELECT INITCAP(ename), NVL(sal, 0) , NVL(comm, 0) FROM emp;
+
+
+8. Mostre para todos empregados seu número, nome e nome do departartamento.
+
+SELECT emp.empno, emp.ename, dept.dname FROM emp FULL JOIN dept ON emp.empno=dept.deptno;
+
+9. Crie a frase seguinte: “ENAME” recebe “SAL” por mês, mas gostaria de receber SAL*3
+para cada empregado. A nova coluna (SAL*3) deve chamar-se salário ambicionado
+
+SELECT ename || ' recebe ' || sal || ' por mes, mas gostaria de receber ' || sal*3 AS salarioAmbicionado FROM emp;
+
+10. Quantos empregados têm um nome terminado em n?
+
+SELECT COUNT(*) FROM EMP WHERE SUBSTR(ename, LENGTH(ename)) = 'n';
