@@ -1,0 +1,38 @@
+1. Seleccione todos os dados dos empregados em que o last_name possua dois ‘s’ seguidos.
+  
+   SELECT * FROM employees WHERE last_name LIKE '%ss%';
+
+2. Mostre o número, nome e sobrenome dos empregados que ganham mais do que a média
+   salarial da empresa e estão subordinados a um gerente que possua a letra A no nome
+   
+   SELECT employee_id, first_name, last_name, salary FROM employees WHERE salary > (SELECT AVG(salary) FROM employees
+   WHERE manager_id IN(SELECT manager_id FROM employees WHERE first_name  like '%A%'));
+
+3.   Mostre para cada gerente, o seu numero e o menor salário pago a um de seus subordinados.
+     Não devem ser considerados os grupos cujos o menor salario seja inferior a 12000.
+
+     SELECT manager_id , MIN(salary) salarioMinimo FROM employees GROUP BY manager_id HAVING MIN(salary) > 12000;
+
+4. Mostre os nomes e os locais (city) de todos os departamentos, além do número de
+  funcionários que trabalham em cada departamento. Certifique-se de que os departamentos
+  sem funcionários também sejam incluídos.
+
+   SELECT l.city,d.department_name, e.employee_id, COUNT(e.employee_id)
+   FROM  locations l,employees e,departments d
+   WHERE d.location_id = l.location_id
+   AND   e.department_id = d.department_id
+   GROUP BY (e.employee_id,d.department_name,l.city);
+
+
+5. Mostre o nome, o salário, data de ingresso e a comissão dos empregados que foram
+   admitidos após o ano 2005 e que recebem comissão. Classifique os dados por salário em
+   ordem decrescente. 
+   
+   SELECT first_name, salary,commission_pct, hire_date FROM 
+   employees WHERE  TO_CHAR(hire_date, 'YYYY')>2005 AND commission_pct IS NOT NULL ORDER BY salary DESC;
+
+6. Mostre os sobrenomes de todos os empregados juntamente com o número de anos e de
+   meses completados em que eles estão empregados.
+   
+   SELECT last_name, TRUNC(MONTHS_BETWEEN(SYSDATE, hire_date) / 12) Anos, 
+   TRUNC(MOD(MONTHS_BETWEEN(SYSDATE, hire_date), 12)) Meses FROM employees;
